@@ -27,6 +27,6 @@ Aplicação .net console destinada a gerar código  com base e templates e tags 
 <p><b><#namespaceRoot#></b> :</p>
 <p><b><#namespaceDomainSource#></b> :</p>
 <p><b><#classNameFormated#></b> :</p>
-<p><b><#inheritClassName#></b> :/p>
+<p><b><#inheritClassName#></b> :</p>
 <p><b><#boundedContext#></b> :</p>
 <p><b><#toolName#></b> :</p>
