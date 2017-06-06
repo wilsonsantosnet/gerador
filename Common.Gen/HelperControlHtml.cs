@@ -78,7 +78,7 @@ namespace Common.Gen
         {
             var ng_required = isRequired ? "ng-required='true'" : string.Empty;
 
-            return @"                <div class='form-group'>
+            return @"                <div class='form-group' ng-show='vm.DataItem<#ReletedClass#>.length > 0'>
                     <label ng-show='vm.formCrud.<#propertyName#>.$valid || vm.formCrud.<#propertyName#>.$pristine'>{{ ::vm.Labels.<#propertyName#> }}</label>
                     <label class='alert alert-danger' ng-show='vm.formCrud.<#propertyName#>.$invalid && vm.formCrud.<#propertyName#>.$dirty'>Campo {{ ::vm.Labels.<#propertyName#> }} é obrigatório</label>
                     <ui-select ng-model='vm.selected<#ReletedClass#>' title='Selecione' on-select='vm.onSelectCallback($item, vm," + "\"" + "<#propertyName#>" + "\"" + @")'>
@@ -97,8 +97,63 @@ namespace Common.Gen
 
             return @"                   <label>{{ ::vm.Labels.<#propertyName#>}}</label>
                     <fieldset>
+                        <text-angular ng-model='vm.Model.<#propertyName#>'>" + @"</text-angular>
+                    </fieldset>";
+        }
+
+        public static string MakeTextEditorBasic(bool isRequired)
+        {
+            var ng_required = isRequired ? "ng-required='true'" : string.Empty;
+
+            return @"                   <label>{{ ::vm.Labels.<#propertyName#>}}</label>
+                    <fieldset>
                         <text-angular ng-model='vm.Model.<#propertyName#>' ta-required='true' ta-toolbar=" + "\"[['html'],['bold', 'italics'],['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent']]\">" + @"</text-angular>
                     </fieldset>";
+        }
+
+        public static string MakeTextStyle(bool isRequired)
+        {
+            var ng_required = isRequired ? "ng-required='true'" : string.Empty;
+
+
+            return @"                <div class='form-group'>
+                    <label ng-show='vm.formCrud.<#propertyName#>.$valid || vm.formCrud.<#propertyName#>.$pristine'>{{ ::vm.Labels.<#propertyName#> }}</label>
+                    <label class='alert alert-danger' ng-show='vm.formCrud.<#propertyName#>.$invalid && vm.formCrud.<#propertyName#>.$dirty'>Campo {{ ::vm.Labels.<#propertyName#> }} é obrigatório</label>
+                    <input type='text' class='form-control' ng-model='vm.Model.<#propertyName#>' name='<#propertyName#>' " + ng_required + @" attributes-c attributes-container='<#className#>' attributes-field='<#propertyName#>' />
+                    <fieldset>
+                          <legend> Estilos </legend >
+                          <dl>
+                              <dt> Alinhar na Esquerda</dt>
+                                 <dd>
+                                     <button class='btn' ngclipboard data-clipboard-text='float:left;' uib-tooltip='copiar'>
+                                      <em class='text-muted'>float:left;</em> <i class='fa fa-copy'></i>
+                                  </button>
+                              </dd>
+                              <dt>Alinhar na Direita</dt>
+                              <dd>
+                                  <button class='btn' ngclipboard data-clipboard-text='float:right;' uib-tooltip='Copiar'>
+                                      <em class='text-muted'>float:right;</em> <i class='fa fa-copy'></i>
+                                  </button>
+                              </dd>
+                              <dt>Alinhar no Centro</dt>
+                              <dd>
+                                  <button class='btn' ngclipboard data-clipboard-text='display: block;margin: 0 auto;' uib-tooltip='Copiar'>
+                                      <em class='text-muted'>display: block;margin: 0 auto;</em> <i class='fa fa-copy'></i>
+                                  </button>
+                              </dd>
+                              <dt>Esconder</dt>
+                              <dd>
+                                  <button class='btn' ngclipboard data-clipboard-text='display: none;' uib-tooltip='Copiar'>
+                                      <em class='text-muted'>display: none;</em> <i class='fa fa-copy'></i>
+                                  </button>
+                              </dd>
+                          </dl>
+                      </fieldset>
+                </div>";
+
+
+            
+
         }
 
         public static string MakeDatepiker(bool isRequired)
@@ -139,7 +194,14 @@ namespace Common.Gen
                             <label class='btn btn-default btn-file'>
                                 Procurar<input type='file' ngf-select='vm.upload($files,vm.Model)' multiple>
                             </label>
+                            <button class='btn btn-default' type='button' ng-click='vm.delete(vm.Model.<#propertyName#>, vm.Model)'>Excluir</button>
                         </span>
+                     </p>
+                    <img src='{{vm.uploadUri}}{{vm.Model.<#propertyName#>}}' style='width: 100px' />
+                    <p ng-show='vm.Model.<#propertyName#> != null' style='margin: 10px'>
+                         <button class='btn' ngclipboard data-clipboard-text='{{vm.uploadUri}}{{vm.Model.<#propertyName#>}}' uib-tooltip='copiar'>
+                            <em class='text-muted'>{{vm.uploadUri}}{{vm.Model.<#propertyName#>}}</em> <i class='fa fa-copy'></i>
+                        </button>
                     </p>
                 </div>";
             

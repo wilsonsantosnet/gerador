@@ -99,6 +99,11 @@ namespace Common.Gen
             return "EntityValidatorSpecification";
         }
 
+        public static string EntityWarningSpecification(TableInfo tableInfo)
+        {
+            return "EntityWarningSpecification";
+        }
+
         public static string EntityServiceBase(TableInfo tableInfo)
         {
             return "EntityServiceBase";
@@ -563,9 +568,19 @@ namespace Common.Gen
             return "api.currentUser";
         }
 
-        public static string Apiupload(TableInfo tableInfo)
+        public static string ApiUpload(TableInfo tableInfo)
         {
             return "api.upload";
+        }
+
+        public static string ApiDownalod(TableInfo tableInfo)
+        {
+            return "api.download";
+        }
+
+        public static string ApiHealth(TableInfo tableInfo)
+        {
+            return "api.health";
         }
 
         public static string Appsettings(TableInfo tableInfo)

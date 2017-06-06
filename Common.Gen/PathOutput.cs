@@ -251,6 +251,18 @@ namespace Common.Gen
             return pathOutput;
         }
 
+        public static string PathOutputDomainEntitysWarningSpecification(TableInfo tableInfo, Context configContext)
+        {
+            var pathOutput = string.Empty;
+
+            var pathBase = PathBase(configContext.OutputClassDomain);
+            pathOutput = Path.Combine(pathBase, "Validations", tableInfo.ClassName, string.Format("{0}AptoParaCadastroWarning.{1}", tableInfo.ClassName, "cs"));
+            MakeDirectory(pathBase, "Validations", tableInfo.ClassName);
+
+
+            return pathOutput;
+        }
+
         public static string PathOutputDomainEntitysValidatorSpecificationRepository(TableInfo tableInfo, Context configContext)
         {
             var pathOutput = string.Empty;
@@ -1001,11 +1013,29 @@ namespace Common.Gen
             return pathOutput;
         }
 
-        public static string PathOutputApiupload(Context configContext, TableInfo tableInfo)
+        public static string PathOutputApiUpload(Context configContext, TableInfo tableInfo)
         {
             var pathOutput = string.Empty;
             var pathBase = PathBase(configContext.OutputClassApi);
             pathOutput = Path.Combine(pathBase, "Controllers", string.Format("uploadController.{0}", "cs"));
+            MakeDirectory("Controllers", pathBase);
+            return pathOutput;
+        }
+
+        public static string PathOutputApiDownload(Context configContext, TableInfo tableInfo)
+        {
+            var pathOutput = string.Empty;
+            var pathBase = PathBase(configContext.OutputClassApi);
+            pathOutput = Path.Combine(pathBase, "Controllers", string.Format("downloadController.{0}", "cs"));
+            MakeDirectory("Controllers", pathBase);
+            return pathOutput;
+        }
+
+        public static string PathOutputApiHeath(Context configContext, TableInfo tableInfo)
+        {
+            var pathOutput = string.Empty;
+            var pathBase = PathBase(configContext.OutputClassApi);
+            pathOutput = Path.Combine(pathBase, "Controllers", string.Format("healthController.{0}", "cs"));
             MakeDirectory("Controllers", pathBase);
             return pathOutput;
         }

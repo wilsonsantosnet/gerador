@@ -91,6 +91,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\Transfer.cs" />
     <Compile Include="Extensions\ValidationExtensions.cs" />
+    <Compile Include="HelperCmd.cs" />
     <Compile Include="Helper\HelperCurrentUser.cs" />
     <Compile Include="Interfaces\IAccount.cs" />
     <Compile Include="Interfaces\IAudit.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="PaginatedDataIQueryable.cs" />
     <Compile Include="PaginateExtensionsIEnumerable.cs" />
     <Compile Include="PaginateResult.cs" />
+    <Compile Include="PrinstScn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaginateExtensionsIQueryable.cs" />
     <Compile Include="ServiceLocatorSingleton.cs" />
@@ -157,8 +159,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\Lib\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

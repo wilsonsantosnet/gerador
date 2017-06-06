@@ -12,6 +12,7 @@ using System.Data.Entity.Core.Mapping;
 using Common.Infrastructure.Log;
 using System.Reflection;
 using System.Data.Entity;
+using Common.Domain;
 
 namespace Common.Gen
 {

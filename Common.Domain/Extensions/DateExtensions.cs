@@ -77,13 +77,13 @@ public static class DateExtensions
         return DateTime.DaysInMonth(year, month);
     }
 
-    public static DateTime StartMonthDate(this DateTime data)
+    public static DateTime FirstDayInMonth(this DateTime data)
     {
         int dayToday = data.Day - 1;
         return data.AddDays(-dayToday);
     }
 
-    public static DateTime EndMonthDate(this DateTime data)
+    public static DateTime LastDayInMonth(this DateTime data)
     {
         int dayToday = data.Day;
         int lastDayOfMonth = data.MonthDays();
@@ -104,14 +104,6 @@ public static class DateExtensions
         var dayBase = dateBase.Day;
         var day = dayBase > lastDayInMonth.Day ? lastDayInMonth.Day : dayBase;
         return new DateTime(dateBase.Year, dateBase.Month, day);
-    }
-
-    public static DateTime LastDayInMonth(DateTime dateBase)
-    {
-        if (dateBase.Month == 12)
-            return new DateTime(dateBase.Year + 1, 2, 1).AddDays(-1);
-
-        return new DateTime(dateBase.Year, dateBase.Month + 1, 1).AddDays(-1);
     }
 
     public static int ToMinutes(this DateTime data)

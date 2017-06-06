@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common.Domain;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace Common.Gen
 {
@@ -43,43 +43,35 @@ namespace Common.Gen
     public static class HelperExternalResources
     {
 
-        public static void Clone(IEnumerable<ExternalResource> resources)
+        public static void CloneAndCopy(IEnumerable<ExternalResource> resources)
         {
             foreach (var resource in resources)
             {
                 if (!resource.UpdateContinuos)
                     continue;
 
-                var bkpPathFolder = string.Format("{0}\\{1}-BKP", AppDomain.CurrentDomain.BaseDirectory, resource.ResouceRepositoryName);
-
-                if (resource.OnlyFoldersContainsThisName.IsNotNullOrEmpty())
-                {
-                    var foldersActual = new DirectoryInfo(resource.ResourceLocalPathDestinationFolrderApplication).GetDirectories()
-                        .Where(_ => _.Name.Contains(resource.OnlyFoldersContainsThisName));
-
-                    foreach (var folderActual in foldersActual)
-                    {
-                        ExecuteCommand(string.Format("robocopy {0} {1} /s /e /xd *\"bin\" *\"obj\"", folderActual.FullName, string.Format("{0}\\{1}", bkpPathFolder, folderActual.Name)));
-                    }
-                }
-                else
-                {
-                    ExecuteCommand(string.Format("robocopy {0} {1} /s /e", resource.ResourceLocalPathDestinationFolrderApplication, bkpPathFolder));
-                }
-
-                if (Directory.Exists(resource.ResourceLocalPathFolderCloningRepository))
-                    ExecuteCommand(string.Format("RMDIR {0} /S /Q", resource.ResourceLocalPathFolderCloningRepository));
-
-                ExecuteCommand(string.Format("git clone {0} {1}", resource.ResourceUrlRepository, resource.ResourceLocalPathFolderCloningRepository));
+                clone(resource);
 
                 if (resource.ReplaceLocalFilesApplication)
-                    ExecuteCommand(string.Format("robocopy {0} {1}", resource.ResourceLocalPathFolderCloningRepository, resource.ResourceLocalPathDestinationFolrderApplication));
+                    HelperCmd.ExecuteCommand(string.Format("robocopy {0} {1}", resource.ResourceLocalPathFolderCloningRepository, resource.ResourceLocalPathDestinationFolrderApplication), 10000);
 
             }
 
         }
 
-        public static void Update(IEnumerable<ExternalResource> resources)
+        public static void CloneOnly(IEnumerable<ExternalResource> resources)
+        {
+            foreach (var resource in resources)
+            {
+                if (!resource.UpdateContinuos)
+                    continue;
+
+                clone(resource);
+            }
+
+        }
+
+        public static void UpdateLocalRepository(IEnumerable<ExternalResource> resources)
         {
             foreach (var resource in resources)
             {
@@ -93,55 +85,46 @@ namespace Common.Gen
 
                     foreach (var folderActual in foldersActual)
                     {
-                        ExecuteCommand(string.Format("robocopy {0} {1} /s /e *\"bin\" *\"obj\"", folderActual.FullName, string.Format("{0}\\{1}", resource.ResourceLocalPathFolderCloningRepository, folderActual.Name)));
+                        HelperCmd.ExecuteCommand(string.Format("robocopy {0} {1} /s /e /xd *\"bin\" *\"obj\"", folderActual.FullName, string.Format("{0}\\{1}", resource.ResourceLocalPathFolderCloningRepository, folderActual.Name)), 10000);
                     }
                 }
                 else
                 {
-                    ExecuteCommand(string.Format("robocopy {0} {1} /s /e", resource.ResourceLocalPathDestinationFolrderApplication, resource.ResourceLocalPathFolderCloningRepository));
+                    HelperCmd.ExecuteCommand(string.Format("robocopy {0} {1} /s /e", resource.ResourceLocalPathDestinationFolrderApplication, resource.ResourceLocalPathFolderCloningRepository), 10000);
                 }
 
             }
 
         }
 
-        static void ExecuteCommand(string command)
+        # region helper
+
+        private static void clone(ExternalResource resource)
         {
-            Console.WriteLine("Execute {0}", command);
+            var bkpPathFolder = string.Format("{0}\\{1}-BKP", AppDomain.CurrentDomain.BaseDirectory, resource.ResouceRepositoryName);
 
-            var processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
-
-            processInfo.CreateNoWindow = true;
-            processInfo.UseShellExecute = false;
-            processInfo.RedirectStandardError = true;
-            processInfo.RedirectStandardOutput = true;
-
-            var process = Process.Start(processInfo);
-            process.WaitForExit(10000);
-
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
-            var exitCode = process.ExitCode;
-
-            if (exitCode == 0)
+            if (resource.OnlyFoldersContainsThisName.IsNotNullOrEmpty())
             {
-                Console.WriteLine("Command {0} executed success", command);
+                var foldersActual = new DirectoryInfo(resource.ResourceLocalPathDestinationFolrderApplication).GetDirectories()
+                    .Where(_ => _.Name.Contains(resource.OnlyFoldersContainsThisName));
+
+                foreach (var folderActual in foldersActual)
+                {
+                    HelperCmd.ExecuteCommand(string.Format("robocopy {0} {1} /s /e /xd *\"bin\" *\"obj\"", folderActual.FullName, string.Format("{0}\\{1}", bkpPathFolder, folderActual.Name)), 10000);
+                }
             }
             else
             {
-
-                if (!String.IsNullOrEmpty(output)) Console.WriteLine("output: {0}", output);
-                if (!String.IsNullOrEmpty(error)) Console.WriteLine("error: {0}", error);
-
-                Console.WriteLine("ExitCode: {0} ", exitCode.ToString());
+                HelperCmd.ExecuteCommand(string.Format("robocopy {0} {1} /s /e", resource.ResourceLocalPathDestinationFolrderApplication, bkpPathFolder), 10000);
             }
 
-            PrinstScn.WriteLine("");
-            System.Threading.Thread.Sleep(3000);
+            if (Directory.Exists(resource.ResourceLocalPathFolderCloningRepository))
+                HelperCmd.ExecuteCommand(string.Format("RMDIR {0} /S /Q", resource.ResourceLocalPathFolderCloningRepository), 10000);
 
-            process.Close();
-
+            HelperCmd.ExecuteCommand(string.Format("git clone {0} {1}", resource.ResourceUrlRepository, resource.ResourceLocalPathFolderCloningRepository), 10000);
         }
+
+        #endregion
 
     }
 }

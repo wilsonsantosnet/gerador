@@ -78,6 +78,7 @@ namespace Common.Domain
             if (token.IsNullOrEmpty())
                 throw new CustomNotAutorizedException("User Not autorized");
 
+
             var tokenConfig = ConfigurationManager.AppSettings["tokenConfig"] as string;
             if (tokenConfig == "JWT")
             {

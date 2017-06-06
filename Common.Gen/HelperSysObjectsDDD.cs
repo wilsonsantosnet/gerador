@@ -37,6 +37,7 @@ namespace Common.Gen
             this.ExecuteTemplateEntitysBase(tableInfo, config, infos);
             this.ExecuteTemplateEntitysExt(tableInfo, config, infos);
             this.ExecuteTemplateEntityValidatorSpecification(tableInfo, config, infos);
+            this.ExecuteTemplateEntityWarningSpecification(tableInfo, config, infos);
             this.ExecuteTemplateEntityValidatorSpecificationReposytory(tableInfo, config, infos);
             this.ExecuteTemplateEntityServiceBase(tableInfo, config, infos);
             this.ExecuteTemplateEntityServiceExt(tableInfo, config, infos);
@@ -75,6 +76,8 @@ namespace Common.Gen
             this.ExecuteTemplateApiStart(tableInfo, config);
             this.ExecuteTemplateApiCurrentUser(tableInfo, config);
             this.ExecuteTemplateApiUpload(tableInfo, config);
+            this.ExecuteTemplateApiDownload(tableInfo, config);
+            this.ExecuteTemplateApiHealth(tableInfo, config);
             this.ExecuteTemplateApiAppSettings(tableInfo, config);
             this.ExecuteTemplateApiProject(tableInfo, config);
             this.ExecuteTemplateDataProject(tableInfo, config);
@@ -222,6 +225,35 @@ namespace Common.Gen
             }
 
         }
+
+        private void ExecuteTemplateEntityWarningSpecification(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+            if (tableInfo.CodeCustomImplemented)
+                return;
+
+            if (!tableInfo.MakeDomain)
+                return;
+
+            var pathOutput = PathOutput.PathOutputDomainEntitysWarningSpecification(tableInfo, configContext);
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.EntityWarningSpecification(tableInfo));
+
+            if (File.Exists(pathOutput))
+                return;
+
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var classBuilder = base.GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+
+
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+
+        }
+
         private void ExecuteTemplateEntityValidatorSpecificationReposytory(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (tableInfo.CodeCustomImplemented)
@@ -1450,11 +1482,57 @@ namespace Common.Gen
             if (!tableInfo.MakeApi)
                 return;
 
-            var pathOutput = PathOutput.PathOutputApiupload(configContext, tableInfo);
+            var pathOutput = PathOutput.PathOutputApiUpload(configContext, tableInfo);
             if (File.Exists(pathOutput))
                 return;
 
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.Apiupload(tableInfo));
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ApiUpload(tableInfo));
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+
+        }
+
+        private void ExecuteTemplateApiHealth(TableInfo tableInfo, Context configContext)
+        {
+            if (!tableInfo.MakeApi)
+                return;
+
+            var pathOutput = PathOutput.PathOutputApiHeath(configContext, tableInfo);
+            if (File.Exists(pathOutput))
+                return;
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ApiHealth(tableInfo));
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+
+        }
+
+        private void ExecuteTemplateApiDownload(TableInfo tableInfo, Context configContext)
+        {
+            if (!tableInfo.MakeApi)
+                return;
+
+            var pathOutput = PathOutput.PathOutputApiDownload(configContext, tableInfo);
+            if (File.Exists(pathOutput))
+                return;
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ApiDownalod(tableInfo));
             if (!File.Exists(pathTemplateClass))
                 return;
 

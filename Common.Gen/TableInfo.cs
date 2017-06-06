@@ -88,6 +88,7 @@ namespace Common.Gen
         public bool upload { get; set; }
         public bool SelectSearch { get; set; }
         public bool TextEditor { get; set; }
+        public bool TextStyle { get; set; }
 
 
     }

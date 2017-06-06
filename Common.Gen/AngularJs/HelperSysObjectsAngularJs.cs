@@ -810,6 +810,17 @@ namespace Common.Gen
                             .Replace("<#className#>", tableInfo.ClassName);
                     }
 
+
+                    var isTextStyle = IsTextStyle(tableInfo, propertyName);
+                    if (isTextStyle)
+                    {
+                        var str = HelperControlHtml.MakeTextStyle(IsRequired(item));
+                        itemForm = FormFieldReplace(configContext, tableInfo, item, textTemplateForm, str);
+                        itemForm = itemForm
+                            .Replace("<#propertyName#>", propertyName)
+                            .Replace("<#className#>", tableInfo.ClassName); 
+                    }
+
                     var isTextEditor = IsTextEditor(tableInfo, propertyName);
                     if (isTextEditor)
                     {
@@ -951,6 +962,16 @@ namespace Common.Gen
                             .Replace("<#className#>", tableInfo.ClassName);
                     }
 
+                    var isTextStyle = IsTextStyle(tableInfo, propertyName);
+                    if (isTextStyle)
+                    {
+                        var str = HelperControlHtml.MakeTextStyle(IsRequired(item));
+                        itemForm = FormFieldReplace(configContext, tableInfo, item, textTemplateForm, str);
+                        itemForm = itemForm
+                            .Replace("<#propertyName#>", propertyName)
+                            .Replace("<#className#>", tableInfo.ClassName); 
+                    }
+
 
                     var isTextEditor = IsTextEditor(tableInfo, propertyName);
                     if (isTextEditor)
@@ -1022,6 +1043,17 @@ namespace Common.Gen
             return tableInfo.FieldsConfig
                 .Where(_ => _.Name.ToUpper() == propertyName.ToUpper())
                 .Where(_ => _.TextEditor)
+                .IsAny();
+        }
+
+        private static bool IsTextStyle(TableInfo tableInfo, string propertyName)
+        {
+            if (tableInfo.FieldsConfig.NotIsAny())
+                return false;
+
+            return tableInfo.FieldsConfig
+                .Where(_ => _.Name.ToUpper() == propertyName.ToUpper())
+                .Where(_ => _.TextStyle)
                 .IsAny();
         }
 
